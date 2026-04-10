@@ -3,7 +3,8 @@ Bodensee Badeberater: An agentic RAG assistant that recommends
 swimming spots around Lake Constance using retrieved data and
 live weather.
 
-Run:  python agent.py
+Run this script to interact with the badeberater in the console. 
+Important: First run build_index to create the RAG for the agent!
 """
 import os
 from dotenv import load_dotenv
