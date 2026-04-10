@@ -181,6 +181,66 @@ def get_weather(location:str):
         f"  Today: {temp_min}°C to {temp_max}°C"
     )
 
+from bs4 import BeautifulSoup
+
+
+@tool
+def get_water_temperature(location: str = "Konstanz") -> str:
+    """
+    Get the current water temperature of Lake Constance (Bodensee).
+
+    Use this tool when the user asks about water temperature, whether
+    the water is warm enough for swimming, wether they can go swimming today or when water temperature
+    would improve your recommendation.
+
+    Args:
+        location: Not used since the water temperature for the bodesee is generally pretty 
+        much the same regardless if you are in Bregenz or Konstanz.
+
+    Returns:
+        A short summary of the current water temperature with a
+        swimming comfort assessment.
+    """
+    url = "https://www.wassertemperatur.org/bodensee/"
+
+    #try to acess the webpage
+    try:
+        response = requests.get(url, timeout=10, headers={
+            "User-Agent": "Mozilla/5.0 (Badeberater-RAG-Agent)"
+        })
+        response.raise_for_status()
+    except requests.RequestException as e:
+        return f"Could not fetch water temperature: {e}"
+    #store response
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    #get the headline temperature 
+    temp_span = soup.find("span", style=lambda s: s and "color:blue" in s)
+
+    if not temp_span:
+        return "Could not find water temperature on the page."
+
+    temp_text = temp_span.get_text(strip=True)
+    try:
+        temp = float(temp_text.replace("°C", "").replace("°", "").strip())
+    except ValueError:
+        return f"Could not parse water temperature: '{temp_text}'"
+
+    #assess the swimming comfort 
+    if temp >= 20:
+        comfort = "Warm and comfortable for swimming."
+    elif temp >= 16:
+        comfort = "Pleasant, though a bit refreshing."
+    elif temp >= 12:
+        comfort = "Cool — only for hardy swimmers or quick dips."
+    else:
+        comfort = "Too cold for most swimmers."
+    #return answer for the agent
+    return (
+        f"Bodensee water temperature: {temp}°C "
+        f"(source: wassertemperatur.org)\n"
+        f"Assessment: {comfort}"
+    )
 
 def _weather_code_to_text(code: int | None) -> str:
     """
