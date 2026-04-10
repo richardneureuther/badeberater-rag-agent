@@ -69,6 +69,8 @@ agent = create_react_agent(
 def main():
     print("=" * 60)
     print("  Badeberater — Bodensee Swimming Spot Assistant")
+    print("  Ready to give you all the swimming related information you need!")
+    print("  You can interact with me in english or german.")
     print("  Type 'quit' to exit.")
     print("=" * 60)
 
