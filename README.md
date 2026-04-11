@@ -97,7 +97,6 @@ badeberater-rag-agent/
 ├── build_index.py            # Embeds JSONL into ChromaDB (run once)
 ├── Scrape_Bodensee_RAG.py    # Data pipeline: bodensee.de → JSONL
 ├── bodensee_swimming.jsonl   # 38 scraped swimming spot records
-├── test_retrieval.py         # Isolated RAG retrieval tests
 ├── test_tools.py             # Tool integration tests
 ├── requirements.txt          # Python dependencies
 ├── .env                      # API key (git-ignored)
