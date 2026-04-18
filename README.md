@@ -47,7 +47,7 @@ Badeberater: In Konstanz gibt es einige schöne Möglichkeiten zum Schwimmen!
 ## Design Decisions
 
 **Why RAG instead of letting the LLM answer from memory?**
-Without RAG, the LLM hallucinates plausible but wrong details — inventing entry fees, opening hours, and features. RAG grounds every recommendation in real scraped data. The system prompt enforces this: *"Never recommend a spot purely from your own knowledge."*
+Without RAG, the LLM hallucinates plausible but wrong details inventing for example entry fees, opening hours, and features. RAG grounds every recommendation in real scraped data. The system prompt enforces this: *"Never recommend a spot purely from your own knowledge."*
 
 **Why multilingual embeddings?**
 Source data is German, but users may query in English or German. I chose `paraphrase-multilingual-MiniLM-L12-v2` over the default English-only models to handle both languages in the same vector space. Embeddings run locally on CPU, free, no API calls.
@@ -56,7 +56,7 @@ Source data is German, but users may query in English or German. I chose `paraph
 Each swimming spot description is short and self-contained (~500–1500 chars). Splitting would fragment the semantic signal, a query for "Rutsche und Massage" might match the slide-chunk but miss the massage-chunk of the same spot. One chunk per spot keeps retrieval coherent.
 
 **Why is this an agent and not just a RAG pipeline?**
-The LLM autonomously decides which tools to call. A question like *"Is today good for swimming?"* triggers both the spot search and the weather tool. A question like *"Tell me about Strandbad Horn"* only triggers the search. The orchestration is not hardcoded, the LLM reasons about which tools are needed based on the user's intent.
+The LLM autonomously decides which tools to call. A question like *"Is today good for swimming?"* should trigger both the spot search and the weather tool. A question like *"Tell me about Strandbad Horn"* only triggers the search. The orchestration is not hardcoded, the LLM reasons about which tools are needed based on the user's intent.
 
 
 ## Setup
@@ -97,7 +97,6 @@ badeberater-rag-agent/
 ├── build_index.py            # Embeds JSONL into ChromaDB (run once)
 ├── Scrape_Bodensee_RAG.py    # Data pipeline: bodensee.de → JSONL
 ├── bodensee_swimming.jsonl   # 38 scraped swimming spot records
-├── test_retrieval.py         # Isolated RAG retrieval tests
 ├── test_tools.py             # Tool integration tests
 ├── requirements.txt          # Python dependencies
 ├── .env                      # API key (git-ignored)
@@ -115,4 +114,4 @@ badeberater-rag-agent/
 - **Water temperature**: Scraped from wassertemperatur.org/bodensee/
 - **Data source**: Custom scraper for bodensee.de (38 swimming spots)
 
-The LLM provider is swappable, switching from Gemini to Claude or OpenAI requires changing two lines (import + model name). Everything else is provider-agnostic via LangChain's abstractions.
+The LLM provider is swappable, switching from Google to Anthorpic or OpenAI requires changing two lines (import + model name). Everything else is provider-agnostic via LangChain's abstractions.
