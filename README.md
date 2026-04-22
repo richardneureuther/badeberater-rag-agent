@@ -57,7 +57,28 @@ Each swimming spot description is short and self-contained (~500–1500 chars). 
 
 **Why is this an agent and not just a RAG pipeline?**
 The LLM autonomously decides which tools to call. A question like *"Is today good for swimming?"* should trigger both the spot search and the weather tool. A question like *"Tell me about Strandbad Horn"* only triggers the search. The orchestration is not hardcoded, the LLM reasons about which tools are needed based on the user's intent.
+## Work in Progress
 
+Verification of the system is still ongoing. Current open points:
+
+**RAG retrieval quality**
+Systematic evaluation of whether the retriever actually surfaces the most relevant spots for a given query is still pending. So far retrieval has been spot checked manually, but there is no test set with labeled query/spot pairs yet, and no metrics (recall@k, MRR) are being tracked.
+
+**Edge cases**
+Several query types need more testing:
+  * Queries mixing multiple constraints ("flaches Ufer, Hund erlaubt, kein Eintritt")
+  * Ambiguous location references ("am See", "in der Nähe")
+  * Queries in mixed German/English or with typos
+  * Questions about spots that exist in reality but are not in the 38 scraped records
+
+**Unknown bathing spots**
+The index only contains spots scraped from bodensee.de. If a user asks about a lesser known lake or a spot not covered by that source, the agent currently tries to answer from the closest match in the index rather than clearly stating that the spot is unknown. The system prompt instructs the LLM not to invent details, but the boundary between "no result found" and "closest semantic match" is not handled cleanly yet.
+
+**Tool reliability**
+The water temperature scraper depends on the current HTML structure of wassertemperatur.org and will break silently if the site changes. No monitoring or fallback is in place.
+
+**Freshness**
+The scraped data is a one time snapshot. Opening hours, fees and facilities may already be outdated. Rerun scraping pipeline to get the newest data bodensee.de provides.
 
 ## Setup
 
