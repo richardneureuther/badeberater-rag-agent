@@ -6,6 +6,10 @@ live weather.
 Run this script to interact with the badeberater in the console. 
 Important: First run build_index to create the RAG for the agent!
 """
+
+#initialisation message so the user knows the script is running
+print("Initializing Badeberater – this may take a moment ...")
+
 import os
 from dotenv import load_dotenv
 
@@ -16,6 +20,8 @@ from tools import search_bathing_spots, get_weather, get_water_temperature
 
 #load API key from .env
 load_dotenv()
+
+print("Ready!")
 
 #initialize the LLM
 llm = ChatGoogleGenerativeAI(
